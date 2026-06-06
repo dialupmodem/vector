@@ -1,0 +1,98 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]enchmark[Dd]ot[Nn]et.Artifacts/
+
+# Publish Output
+publish/
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Entity Framework
+*.dbmdl
+*.jfm
+
+# Local DBs
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+*.db
+
+# User Secrets
+secrets.json
+
+# Environment Files
+.env
+.env.*
+!.env.example
+
+# Node (if you add React/Angular later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+docker-compose.override.yml
+
+# Generated Files
+Generated/
+wwwroot/dist/
+wwwroot/lib/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+coverage-report/
+*.coverage
+*.coveragexml
+
+# Azure
+.publishsettings
+
+# Temporary Files
+*.tmp
+*.temp
+
+# JetBrains
+_ReSharper*/
+*.DotSettings.user
+
+# GitHub Copilot / AI scratch files
+*.chat.md
+
+# Local application settings
+appsettings.Development.json
+
+# Local databases
+data/
