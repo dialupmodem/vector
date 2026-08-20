@@ -18,8 +18,8 @@
         <span asp-validation-for="JobTitle" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Status" class="form-label"></label>
-        <input asp-for="Status" class="form-control" />
+        <label asp-for="ApplicationStatusId" class="form-label">Status</label>
+        <select asp-for="ApplicationStatusId" asp-items="Model.StatusOptions" class="form-select"></select>
     </div>
     <div class="mb-3">
         <label asp-for="DateApplied" class="form-label"></label>

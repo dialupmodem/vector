@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vector.Data;
 
@@ -11,9 +12,11 @@ using Vector.Data;
 namespace Vector.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260820130740_AddApplicationStatus")]
+    partial class AddApplicationStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace Vector.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationStatusId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Company")
                         .IsRequired()
@@ -53,9 +53,12 @@ namespace Vector.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationStatusId");
+                    b.HasIndex("StatusId");
 
                     b.ToTable("Applications");
                 });
@@ -110,7 +113,7 @@ namespace Vector.Migrations
                 {
                     b.HasOne("Vector.Data.ApplicationStatus", "Status")
                         .WithMany("Applications")
-                        .HasForeignKey("ApplicationStatusId")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

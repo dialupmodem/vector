@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vector.Data;
 using Vector.Models.Applications;
@@ -21,9 +22,9 @@ namespace Vector.Controllers
                 .Select(a => new ApplicationsListItemViewModel
                 {
                     Id = a.Id,
-                    Company = a.Company ?? "",
-                    JobTitle = a.JobTitle ?? "",
-                    ApplicationStatus = a.Status ?? "",
+                    Company = a.Company,
+                    JobTitle = a.JobTitle,
+                    ApplicationStatus = a.Status.Name,
                     DateApplied = a.DateApplied
                 })
                 .ToListAsync();
@@ -40,7 +41,8 @@ namespace Vector.Controllers
         {
             return View(new CreateApplicationViewModel
             {
-                DateApplied = DateTime.Today
+                DateApplied = DateTime.Today,
+                StatusOptions = await GetStatusOptionsAsync()
             });
         }
         [HttpPost]
@@ -54,7 +56,7 @@ namespace Vector.Controllers
             {
                 Company = model.Company,
                 JobTitle = model.JobTitle,
-                Status = model.Status,
+                ApplicationStatusId = model.ApplicationStatusId,
                 DateApplied = model.DateApplied,
                 JobUrl = model.JobUrl,
                 Notes = model.Notes
@@ -77,7 +79,7 @@ namespace Vector.Controllers
                     Id = a.Id,
                     Company = a.Company,
                     JobTitle = a.JobTitle,
-                    Status = a.Status,
+                    ApplicationStatusId = a.ApplicationStatusId,
                     DateApplied = a.DateApplied,
                     JobUrl = a.JobUrl,
                     Notes = a.Notes
@@ -86,6 +88,8 @@ namespace Vector.Controllers
 
             if (model is null)
                 return NotFound();
+
+            model.StatusOptions = await GetStatusOptionsAsync();
 
             return View(model);
         }
@@ -106,7 +110,7 @@ namespace Vector.Controllers
 
             application.Company = model.Company;
             application.JobTitle = model.JobTitle;
-            application.Status = model.Status;
+            application.ApplicationStatusId = model.ApplicationStatusId;
             application.DateApplied = model.DateApplied;
             application.JobUrl = model.JobUrl;
             application.Notes = model.Notes;
@@ -127,7 +131,7 @@ namespace Vector.Controllers
                     Id = a.Id,
                     Company = a.Company,
                     JobTitle = a.JobTitle,
-                    Status = a.Status,
+                    Status = a.Status.Name,
                     DateApplied = a.DateApplied,
                     JobUrl = a.JobUrl,
                     Notes = a.Notes
@@ -137,7 +141,22 @@ namespace Vector.Controllers
             if (model is null)
                 return NotFound();
 
+           
+
             return View(model);
+        }
+        
+        private async Task<List<SelectListItem>> GetStatusOptionsAsync()
+        {
+            return await _context.ApplicationStatus
+                .AsNoTracking()
+                .OrderBy(s => s.SortOrder)
+                .Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                })
+                .ToListAsync();
         }
     }
 }
