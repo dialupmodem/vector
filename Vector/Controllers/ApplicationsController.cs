@@ -66,14 +66,78 @@ namespace Vector.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await _context.Applications
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Select(a => new EditApplicationViewModel
+                {
+                    Id = a.Id,
+                    Company = a.Company,
+                    JobTitle = a.JobTitle,
+                    Status = a.Status,
+                    DateApplied = a.DateApplied,
+                    JobUrl = a.JobUrl,
+                    Notes = a.Notes
+                })
+                .SingleOrDefaultAsync();
 
-        public async Task<IActionResult> Edit()
-        {
-            return Ok();
+            if (model is null)
+                return NotFound();
+
+            return View(model);
         }
-        public async Task<IActionResult> Details()
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditApplicationViewModel model)
         {
-            return Ok();
+            if (id != model.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var application = await _context.Applications.FindAsync(id);
+
+            if (application is null)
+                return NotFound();
+
+            application.Company = model.Company;
+            application.JobTitle = model.JobTitle;
+            application.Status = model.Status;
+            application.DateApplied = model.DateApplied;
+            application.JobUrl = model.JobUrl;
+            application.Notes = model.Notes;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await _context.Applications
+                .AsNoTracking()
+                .Where(a => a.Id == id)
+                .Select(a => new ApplicationDetailsViewModel
+                {
+                    Id = a.Id,
+                    Company = a.Company,
+                    JobTitle = a.JobTitle,
+                    Status = a.Status,
+                    DateApplied = a.DateApplied,
+                    JobUrl = a.JobUrl,
+                    Notes = a.Notes
+                })
+                .SingleOrDefaultAsync();
+
+            if (model is null)
+                return NotFound();
+
+            return View(model);
         }
     }
 }

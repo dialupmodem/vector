@@ -1,0 +1,39 @@
+﻿@model ApplicationDetailsViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Application Details";
+}
+
+<h1 class="mb-4">Application Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Company</dt>
+    <dd class="col-sm-9">@Model.Company</dd>
+
+    <dt class="col-sm-3">Position</dt>
+    <dd class="col-sm-9">@Model.JobTitle</dd>
+
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">@Model.Status</dd>
+
+    <dt class="col-sm-3">Date Applied</dt>
+    <dd class="col-sm-9">@Model.DateApplied?.ToString("MMM d, yyyy")</dd>
+
+    <dt class="col-sm-3">Job URL</dt>
+    <dd class="col-sm-9">
+        @if (!string.IsNullOrWhiteSpace(Model.JobUrl))
+        {
+            <a href="@Model.JobUrl" target="_blank" rel="noopener noreferrer">
+                View Posting
+            </a>
+        }
+    </dd>
+
+    <dt class="col-sm-3">Notes</dt>
+    <dd class="col-sm-9" style="white-space: pre-wrap;">@Model.Notes</dd>
+</dl>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
