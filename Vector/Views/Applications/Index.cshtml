@@ -1,5 +1,6 @@
-﻿@model IEnumerable<ApplicationsListViewModel>
+﻿@model ApplicationListViewModel
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Applications";
 }
 
@@ -8,7 +9,7 @@
 
     <a asp-controller="Applications" asp-action="Create" class="btn btn-primary">Add Application</a>
 </div>
-@if (!Model.Any())
+@if (!Model.Applications.Any())
 {
     <div class="alert alert-secondary">
         No applications yet.
@@ -27,13 +28,13 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var application in Model)
+            @foreach (var application in Model.Applications)
             {
                 <tr>
                     <td>@application.Company</td>
                     <td>@application.JobTitle</td>
                     <td>@application.ApplicationStatus</td>
-                    <td>@application.DateApplied.!ToString("MMM d, yyyy")</td>
+                    <td>@application.DateApplied?.ToString("MMM d, yyyy")</td>
                     <td class="text-end">
                         <a asp-action="Edit" asp-route-id="@application.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <a asp-action="Details" asp-route-id="@application.Id" class="btn btn-sm btn-outline-secondary">Details</a>

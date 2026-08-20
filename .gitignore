@@ -93,3 +93,6 @@ _ReSharper*/
 
 # Local application settings
 appsettings.Development.json
+
+#LibMan
+Vector/wwwroot/lib/

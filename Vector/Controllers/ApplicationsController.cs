@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using Vector.Data;
 using Vector.Models.Applications;
@@ -17,7 +18,7 @@ namespace Vector.Controllers
         public async Task<IActionResult> Index()
         {
             var applications = await _context.Applications
-                .Select(a => new ApplicationsListViewModel
+                .Select(a => new ApplicationsListItemViewModel
                 {
                     Id = a.Id,
                     Company = a.Company ?? "",
@@ -27,12 +28,45 @@ namespace Vector.Controllers
                 })
                 .ToListAsync();
 
-            return View(applications);
+            var model = new ApplicationListViewModel() { 
+                Applications = applications 
+            };
+
+            return View(model);
         }
+
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
-            return Ok();
+            return View(new CreateApplicationViewModel
+            {
+                DateApplied = DateTime.Today
+            });
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateApplicationViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var application = new Application
+            {
+                Company = model.Company,
+                JobTitle = model.JobTitle,
+                Status = model.Status,
+                DateApplied = model.DateApplied,
+                JobUrl = model.JobUrl,
+                Notes = model.Notes
+            };
+
+            _context.Applications.Add(application);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
         public async Task<IActionResult> Edit()
         {
             return Ok();
