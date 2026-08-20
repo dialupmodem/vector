@@ -59,6 +59,10 @@ namespace Vector.Controllers
                 ApplicationStatusId = model.ApplicationStatusId,
                 DateApplied = model.DateApplied,
                 JobUrl = model.JobUrl,
+                JobDescription = model.JobDescription,
+                Salary = model.JobSalary,
+                Source = model.JobSource,
+                Location = model.JobLocation,
                 Notes = model.Notes
             };
 
@@ -82,6 +86,10 @@ namespace Vector.Controllers
                     ApplicationStatusId = a.ApplicationStatusId,
                     DateApplied = a.DateApplied,
                     JobUrl = a.JobUrl,
+                    JobDescription = a.JobDescription,
+                    JobSalary = a.Salary,
+                    JobSource = a.Source,
+                    JobLocation = a.Location,
                     Notes = a.Notes
                 })
                 .SingleOrDefaultAsync();
@@ -113,6 +121,10 @@ namespace Vector.Controllers
             application.ApplicationStatusId = model.ApplicationStatusId;
             application.DateApplied = model.DateApplied;
             application.JobUrl = model.JobUrl;
+            application.JobDescription = model.JobDescription;
+            application.Location = model.JobLocation;
+            application.Source = model.JobSource;
+            application.Salary = model.JobSalary;
             application.Notes = model.Notes;
 
             await _context.SaveChangesAsync();
@@ -134,6 +146,10 @@ namespace Vector.Controllers
                     Status = a.Status.Name,
                     DateApplied = a.DateApplied,
                     JobUrl = a.JobUrl,
+                    JobDescription = a.JobDescription,
+                    JobSalary = a.Salary,
+                    JobLocation = a.Location,
+                    JobSource = a.Source,
                     Notes = a.Notes
                 })
                 .SingleOrDefaultAsync();
