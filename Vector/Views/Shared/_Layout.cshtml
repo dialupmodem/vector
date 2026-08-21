@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial scale=1.0" />
     <title>@ViewData["Title"] - Vector</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/gridjs/theme/mermaid.min.css" />
 </head>
 <body>
     <main class="container py-4">
         @RenderBody()
     </main>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/gridjs/gridjs.umd.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

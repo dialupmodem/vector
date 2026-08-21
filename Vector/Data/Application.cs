@@ -11,9 +11,11 @@
         public string? Salary { get; set; }
         public string? Source { get; set; }
         public int ApplicationStatusId { get; set; }
-        public ApplicationStatus Status { get; set; } = null!;
         public DateTime? DateApplied { get; set; }
         public DateTime? LastUpdated { get; set; }
         public string? Notes { get; set; }
+
+        public ApplicationStatus Status { get; set; } = null!;
+        public ICollection<ApplicationActivity> ApplicationActivity = [];
     }
 }

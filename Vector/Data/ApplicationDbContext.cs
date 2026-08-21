@@ -6,6 +6,7 @@ namespace Vector.Data
     {
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationStatus> ApplicationStatus { get; set; }
+        public DbSet<ApplicationActivity> ApplicationActivity { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

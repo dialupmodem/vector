@@ -13,5 +13,7 @@
         public string? JobSource { get; set; }
         public string? JobUrl { get; set; }
         public string? Notes { get; set; }
+
+        public List<ApplicationActivityListItemModel> Activity { get; set; } = [];
     }
 }

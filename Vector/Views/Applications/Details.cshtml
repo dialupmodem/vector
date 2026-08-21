@@ -6,46 +6,125 @@
 
 <h1 class="mb-4">Application Details</h1>
 
-<dl class="row">
-    <dt class="col-sm-3">Company</dt>
-    <dd class="col-sm-9">@Model.Company</dd>
+<ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#details" type="button">Details</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity">Activity</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#skills">Skills</button>
+    </li>
+</ul>
 
-    <dt class="col-sm-3">Position</dt>
-    <dd class="col-sm-9">@Model.JobTitle</dd>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="details">
+        <dl class="row">
+            <dt class="col-sm-3">Company</dt>
+            <dd class="col-sm-9">@Model.Company</dd>
 
-    <dt class="col-sm-3">Status</dt>
-    <dd class="col-sm-9">@Model.Status</dd>
+            <dt class="col-sm-3">Position</dt>
+            <dd class="col-sm-9">@Model.JobTitle</dd>
 
-    <dt class="col-sm-3">Date Applied</dt>
-    <dd class="col-sm-9">@Model.DateApplied?.ToString("MMM d, yyyy")</dd>
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.Status</dd>
 
-    <dt class="col-sm-3">Job URL</dt>
-    <dd class="col-sm-9">
-        @if (!string.IsNullOrWhiteSpace(Model.JobUrl))
+            <dt class="col-sm-3">Date Applied</dt>
+            <dd class="col-sm-9">@Model.DateApplied?.ToString("MMM d, yyyy")</dd>
+
+            <dt class="col-sm-3">Job URL</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrWhiteSpace(Model.JobUrl))
+                {
+                    <a href="@Model.JobUrl" target="_blank" rel="noopener noreferrer">
+                        View Posting
+                    </a>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Job Description</dt>
+            <dd class="col-sm-9" style="white-space: pre-wrap">@Model.JobDescription</dd>
+
+            <dt class="col-sm-3">Job Location</dt>
+            <dd class="col-sm-9">@Model.JobLocation</dd>
+
+            <dt class="col-sm-3">Job Salary</dt>
+            <dd class="col-sm-9">@Model.JobSalary</dd>
+
+            <dt class="col-sm-3">Job Source</dt>
+            <dd class="col-sm-9">@Model.JobSource</dd>
+
+            <dt class="col-sm-3">Notes</dt>
+            <dd class="col-sm-9" style="white-space: pre-wrap;">@Model.Notes</dd>
+        </dl>
+
+    </div>
+    <div class="tab-pane fade" id="activity">
+        @if (!Model.Activity.Any())
         {
-            <a href="@Model.JobUrl" target="_blank" rel="noopener noreferrer">
-                View Posting
-            </a>
+            <div class="alert alert-secondary">
+                No Acivity yet.
+            </div>
         }
-    </dd>
+        else
+        {
+            <table id="activity-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var activityEntry in Model.Activity)
+                    {
+                        <tr>
+                            <td>@activityEntry.DateAdded.ToString("MMM d, yyyy")</td>
+                            <td>@activityEntry.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div id="activity-grid"></div>
+        }
+        <form asp-action="AddActivity" method="post">
+            <input type="hidden" name="applicationId" value="@Model.Id" />
+            <div class="input-group">
+                <input type="text" name="description" class="form-control" placeholder="Add activity..." />
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
 
-    <dt class="col-sm-3">Job Description</dt>
-    <dd class="col-sm-9" style="white-space: pre-wrap">@Model.JobDescription</dd>
+        </form>
+    </div>
+    <div class="tab-pane fade" id="skills"></div>
+</div>
 
-    <dt class="col-sm-3">Job Location</dt>
-    <dd class="col-sm-9">@Model.JobLocation</dd>
 
-    <dt class="col-sm-3">Job Salary</dt>
-    <dd class="col-sm-9">@Model.JobSalary</dd>
-
-    <dt class="col-sm-3">Job Source</dt>
-    <dd class="col-sm-9">@Model.JobSource</dd>
-
-    <dt class="col-sm-3">Notes</dt>
-    <dd class="col-sm-9" style="white-space: pre-wrap;">@Model.Notes</dd>
-</dl>
-
-<div class="mt-4">
+<div class="mt-4 mb-4">
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("activity-table")
+
+            new gridjs.Grid({
+                from: table,
+                search: true,
+                sort: true,
+                pagination: {
+                    enabled: true,
+                    limit: 10
+                }
+            }).render(document.getElementById("activity-grid"))
+
+            table.remove()
+        })
+    </script>
+}
+
+
+

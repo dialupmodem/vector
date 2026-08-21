@@ -69,6 +69,16 @@ namespace Vector.Controllers
             _context.Applications.Add(application);
             await _context.SaveChangesAsync();
 
+            var acivity = new ApplicationActivity()
+            {
+                ApplicationId = application.Id,
+                Description = "Application Added",
+                CreatedAt = DateTime.Today,
+            };
+
+            _context.ApplicationActivity.Add(acivity);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -103,6 +113,7 @@ namespace Vector.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditApplicationViewModel model)
         {
             if (id != model.Id)
@@ -111,10 +122,30 @@ namespace Vector.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var application = await _context.Applications.FindAsync(id);
+            var application = await _context.Applications
+                .Include(a => a.Status)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application is null)
                 return NotFound();
+
+            var statusChanged = application.ApplicationStatusId != model.ApplicationStatusId;
+
+            if (statusChanged)
+            {
+                var newStatus = await _context.ApplicationStatus
+                    .FindAsync(model.ApplicationStatusId);
+
+                if (newStatus is null)
+                    return BadRequest();
+
+                _context.ApplicationActivity.Add(new ApplicationActivity
+                {
+                    ApplicationId = application.Id,
+                    CreatedAt = DateTime.Today,
+                    Description = $"Status changed from {application.Status.Name} to {newStatus.Name}"
+                });
+            }
 
             application.Company = model.Company;
             application.JobTitle = model.JobTitle;
@@ -128,7 +159,6 @@ namespace Vector.Controllers
             application.Notes = model.Notes;
 
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -157,9 +187,42 @@ namespace Vector.Controllers
             if (model is null)
                 return NotFound();
 
-           
+            model.Activity = await _context.ApplicationActivity
+                .AsNoTracking()
+                .Where(a => a.ApplicationId == id)
+                .Select(a => new ApplicationActivityListItemModel
+                {
+                    Description = a.Description,
+                    DateAdded = a.CreatedAt
+                })
+                .ToListAsync();
 
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddActivity(int applicationId, string description)
+        {
+            if (string.IsNullOrEmpty(description))
+                return RedirectToAction(nameof(Details), new { id = applicationId });
+
+            var applicationExists = await _context.Applications
+                .AnyAsync(a => a.Id == applicationId);
+
+            if (!applicationExists)
+                return NotFound();
+
+            _context.ApplicationActivity.Add(new ApplicationActivity
+            {
+                ApplicationId = applicationId,
+                CreatedAt = DateTime.Today,
+                Description = description.Trim()
+            });
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = applicationId });
         }
         
         private async Task<List<SelectListItem>> GetStatusOptionsAsync()

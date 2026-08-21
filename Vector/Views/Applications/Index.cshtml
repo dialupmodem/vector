@@ -17,7 +17,7 @@
 }
 else
 {
-    <table class="table table-striped align-middle">
+    <table id="applications-table" class="table">
         <thead>
             <tr>
                 <th>Company</th>
@@ -43,4 +43,25 @@ else
             }
         </tbody>
     </table>
+    <div id="applications-grid"></div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("applications-table")
+
+            new gridjs.Grid({
+                from: table,
+                search: true,
+                sort: true,
+                pagination: {
+                    enabled: true,
+                    limit: 10
+                }
+            }).render(document.getElementById("applications-grid"))
+
+            table.remove()
+        })
+    </script>
 }
